@@ -203,6 +203,31 @@ class WhatsAppService {
     }
 
     /**
+     * Enfileira uma ação exclusiva para garantir que ações no Puppeteer
+     * sejam serializadas, evitando concorrência na navegação e o erro
+     * "Execution context was destroyed, most likely because of a navigation".
+     * @param {Function} actionFn
+     * @returns {Promise<any>}
+     */
+    async runExclusiveAction(actionFn) {
+        if (!this._actionQueue) {
+            this._actionQueue = Promise.resolve();
+        }
+
+        const currentAction = (async () => {
+            try {
+                await this._actionQueue;
+            } catch (e) {
+                // Não propaga erro da ação anterior na cadeia
+            }
+            return await actionFn();
+        })();
+
+        this._actionQueue = currentAction.catch(() => {});
+        return await currentAction;
+    }
+
+    /**
      * Retorna o QR Code atual se disponível.
      * @returns {{ qrCodeDataUrl: string|null, qrCodeRaw: string|null }}
      */
@@ -224,6 +249,18 @@ class WhatsAppService {
      * @returns {Promise<Object>}
      */
     async getContactDetails(rawPhone, captureScreenshot = true) {
+        return this.runExclusiveAction(async () => {
+            return this._executeGetContactDetails(rawPhone, captureScreenshot);
+        });
+    }
+
+    /**
+     * Execução interna serializada da consulta de dados do contato.
+     * @param {string} rawPhone
+     * @param {boolean} captureScreenshot
+     * @returns {Promise<Object>}
+     */
+    async _executeGetContactDetails(rawPhone, captureScreenshot = true) {
         if (!this.client || (this.status !== 'READY' && this.status !== 'AUTHENTICATED')) {
             throw new Error('O WhatsApp Web não está conectado. Conecte primeiro escaneando o QR Code.');
         }
@@ -792,6 +829,17 @@ class WhatsAppService {
      * @returns {Promise<Object>}
      */
     async setUserStatusMessage(newStatusMessage) {
+        return this.runExclusiveAction(async () => {
+            return this._executeSetUserStatusMessage(newStatusMessage);
+        });
+    }
+
+    /**
+     * Execução interna serializada da atualização de recado.
+     * @param {string} newStatusMessage
+     * @returns {Promise<Object>}
+     */
+    async _executeSetUserStatusMessage(newStatusMessage) {
         if (this.status !== 'READY' || !this.client) {
             throw new Error('O WhatsApp Web não está conectado. Conecte primeiro escaneando o QR Code.');
         }

@@ -42,4 +42,13 @@ const gracefulShutdown = async (signal) => {
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 
+// Previne encerramento do processo em caso de rejeições não tratadas de bibliotecas de terceiros
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('[Process] Unhandled Rejection capturado com segurança:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('[Process] Uncaught Exception capturado com segurança:', err.message);
+});
+
 module.exports = server;
