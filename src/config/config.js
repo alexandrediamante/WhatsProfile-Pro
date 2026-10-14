@@ -3,8 +3,27 @@
  * Define parâmetros do servidor HTTP, caminhos de persistência e opções do Puppeteer.
  */
 
+const fs = require('fs');
 const path = require('path');
 require('dotenv').config();
+
+function getSystemChromePath() {
+    if (process.env.CHROME_BIN && fs.existsSync(process.env.CHROME_BIN)) {
+        return process.env.CHROME_BIN;
+    }
+    const candidates = [
+        'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+        'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
+        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'
+    ];
+    for (const candidate of candidates) {
+        if (fs.existsSync(candidate)) {
+            return candidate;
+        }
+    }
+    return null;
+}
 
 const ROOT_DIR = path.resolve(__dirname, '../../');
 const SESSIONS_DIR = path.join(ROOT_DIR, 'sessions', 'whatsapp_browser_session');
@@ -23,7 +42,7 @@ const config = {
     },
     puppeteer: {
         headless: process.env.HEADLESS === 'true' ? 'new' : (process.env.HEADLESS === 'false' ? false : 'new'),
-        executablePath: process.env.CHROME_BIN || null,
+        executablePath: getSystemChromePath(),
         defaultViewport: {
             width: 1440,
             height: 900
