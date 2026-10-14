@@ -8,6 +8,13 @@ const router = express.Router();
 const WhatsAppController = require('../controllers/WhatsAppController');
 const ContactController = require('../controllers/ContactController');
 
+const path = require('path');
+
+// --- Rota de Especificação OpenAPI para Plataformas de IA ---
+router.get('/openapi.json', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../../openapi.json'));
+});
+
 // --- Rotas de Sessão e Conexão ---
 router.get('/status', WhatsAppController.getStatus);
 router.get('/qr', WhatsAppController.getQrCode);

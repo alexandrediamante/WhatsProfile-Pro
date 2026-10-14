@@ -13,7 +13,8 @@ const server = app.listen(config.server.port, config.server.host, () => {
     console.log('================================================================');
     console.log(`📡 Servidor ativo em: http://localhost:${config.server.port}`);
     console.log(`🌐 Acessível externamente em: http://${config.server.host}:${config.server.port}`);
-    console.log(`📑 Documentação da API: http://localhost:${config.server.port}/#api-docs`);
+    console.log(`📑 Documentação Interativa Swagger UI: http://localhost:${config.server.port}/api-docs`);
+    console.log(`🤖 Especificação OpenAPI 3.1 para IAs: http://localhost:${config.server.port}/api/openapi.json`);
     console.log('================================================================');
 
     // Inicia o serviço do WhatsApp Web em segundo plano

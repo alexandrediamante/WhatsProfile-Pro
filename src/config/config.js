@@ -12,7 +12,7 @@ const SCREENSHOTS_DIR = path.join(ROOT_DIR, 'screenshots');
 
 const config = {
     server: {
-        port: parseInt(process.env.PORT, 10) || 3000,
+        port: parseInt(process.env.PORT, 10) || 1800,
         host: process.env.HOST || '0.0.0.0'
     },
     paths: {

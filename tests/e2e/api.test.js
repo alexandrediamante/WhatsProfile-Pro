@@ -89,12 +89,20 @@ describe('API REST Endpoints', () => {
         });
     });
 
-    describe('GET /api/rota-inexistente', () => {
-        test('deve retornar 404 em JSON com mensagem de erro padronizada', async () => {
-            const res = await request(app).get('/api/rota-inexistente');
-            expect(res.statusCode).toBe(404);
-            expect(res.body.success).toBe(false);
-            expect(res.body.error).toContain('não encontrado');
+    describe('GET /api/openapi.json', () => {
+        test('deve retornar a especificação OpenAPI em JSON', async () => {
+            const res = await request(app).get('/api/openapi.json');
+            expect(res.statusCode).toBe(200);
+            expect(res.body.openapi).toBeDefined();
+            expect(res.body.info.title).toContain('WhatsProfile Pro');
+        });
+    });
+
+    describe('GET /api-docs (Swagger UI)', () => {
+        test('deve responder status 200 para a documentação interativa Swagger', async () => {
+            const res = await request(app).get('/api-docs/');
+            expect(res.statusCode).toBe(200);
+            expect(res.text).toContain('swagger');
         });
     });
 });

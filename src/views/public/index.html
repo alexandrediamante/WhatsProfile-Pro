@@ -330,11 +330,11 @@
                     </div>
                     <div class="code-snippet-box">
                         <div class="snippet-header">Exemplo cURL:</div>
-                        <pre><code>curl -X GET "http://localhost:3000/api/contact/5511999999999"</code></pre>
+                        <pre><code>curl -X GET "http://localhost:1800/api/contact/5511999999999"</code></pre>
                     </div>
                     <div class="code-snippet-box">
                         <div class="snippet-header">Exemplo Node.js (fetch):</div>
-                        <pre><code>const response = await fetch('http://localhost:3000/api/contact/5511999999999');
+                        <pre><code>const response = await fetch('http://localhost:1800/api/contact/5511999999999');
 const data = await response.json();
 console.log(data.data.contactInfo.name, data.data.profilePicture.url, data.data.screenshot.imageUrl);</code></pre>
                     </div>
@@ -347,7 +347,7 @@ console.log(data.data.contactInfo.name, data.data.profilePicture.url, data.data.
                     </div>
                     <p>Obtém a URL direta da foto de perfil em alta resolução.</p>
                     <div class="code-snippet-box">
-                        <pre><code>curl -X GET "http://localhost:3000/api/contact/5511999999999/picture"</code></pre>
+                        <pre><code>curl -X GET "http://localhost:1800/api/contact/5511999999999/picture"</code></pre>
                     </div>
                 </div>
 
@@ -360,11 +360,11 @@ console.log(data.data.contactInfo.name, data.data.profilePicture.url, data.data.
                     <p>Atualiza o recado/status do WhatsApp conectado. Aceita tanto POST com body JSON quanto GET com query param <code>?message=...</code>.</p>
                     <div class="code-snippet-box">
                         <div class="snippet-header">Exemplo GET (via navegador ou URL):</div>
-                        <pre><code>curl -X GET "http://localhost:3000/api/user/status?message=Atendimento%20Online"</code></pre>
+                        <pre><code>curl -X GET "http://localhost:1800/api/user/status?message=Atendimento%20Online"</code></pre>
                     </div>
                     <div class="code-snippet-box">
                         <div class="snippet-header">Exemplo POST JSON:</div>
-                        <pre><code>curl -X POST "http://localhost:3000/api/user/status" \
+                        <pre><code>curl -X POST "http://localhost:1800/api/user/status" \
   -H "Content-Type: application/json" \
   -d '{"statusMessage": "Em reunião no momento"}'</code></pre>
                     </div>
@@ -377,7 +377,7 @@ console.log(data.data.contactInfo.name, data.data.profilePicture.url, data.data.
                     </div>
                     <p>Consulta se o WhatsApp Web está online, pronto ou aguardando QR Code.</p>
                     <div class="code-snippet-box">
-                        <pre><code>curl -X GET "http://localhost:3000/api/status"</code></pre>
+                        <pre><code>curl -X GET "http://localhost:1800/api/status"</code></pre>
                     </div>
                 </div>
             </div>

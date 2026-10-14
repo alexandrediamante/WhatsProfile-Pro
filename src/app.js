@@ -27,6 +27,13 @@ app.use(express.static(config.paths.viewsDir));
 // Serve screenshots diretamente
 app.use('/screenshots', express.static(config.paths.screenshotsDir));
 
+const swaggerUi = require('swagger-ui-express');
+const openapiDocument = require('../openapi.json');
+
+// Interface Swagger UI interativa para documentação da API
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiDocument));
+app.use('/docs', (req, res) => res.redirect('/api-docs'));
+
 // Rotas da API REST
 app.use('/api', apiRoutes);
 

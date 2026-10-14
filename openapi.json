@@ -1,0 +1,234 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "WhatsProfile Pro - WhatsApp Web Extraction & Automation API",
+    "version": "1.0.0",
+    "description": "API REST e Toolkit de Ferramentas de IA para validação de números, extração de dados cadastrais, download de fotos de perfil, alteração de recado e captura de print do painel lateral ('Dados do contacto') do WhatsApp Web."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:1800",
+      "description": "Servidor Local WhatsProfile Pro"
+    }
+  ],
+  "paths": {
+    "/api/status": {
+      "get": {
+        "operationId": "getWhatsAppConnectionStatus",
+        "summary": "Verificar status da conexão do WhatsApp Web",
+        "description": "Retorna o estado operacional atual do WhatsApp Web (READY, QR_READY, INITIALIZING, DISCONNECTED) e dados da conta conectada.",
+        "responses": {
+          "200": {
+            "description": "Status da conexão retornado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "status": { "type": "string", "example": "READY" },
+                        "isConnected": { "type": "boolean", "example": true },
+                        "hasQrCode": { "type": "boolean", "example": false },
+                        "authInfo": {
+                          "type": "object",
+                          "properties": {
+                            "pushname": { "type": "string", "example": "Suporte IA" },
+                            "wid": { "type": "string", "example": "5511999999999@c.us" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/contact/{phone}": {
+      "get": {
+        "operationId": "checkWhatsAppContact",
+        "summary": "Consultar dados cadastrais, foto e print do contato",
+        "description": "Verifica se o número existe no WhatsApp, identifica se é Conta Comercial (WhatsApp Business) ou Pessoal, obtém nome, recado (about/status), URL da foto de perfil em alta resolução e captura de tela recortada do painel lateral ('Dados do contacto').",
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "path",
+            "required": true,
+            "description": "Número de telefone com ou sem DDI (Ex: 5511999999999 ou 11999999999).",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "screenshot",
+            "in": "query",
+            "required": false,
+            "description": "Define se deve capturar o print da barra lateral direita (true por padrão). Use false para resposta mais veloz caso precise apenas de texto e foto.",
+            "schema": { "type": "boolean", "default": true }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dados do contato retornados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "cleanPhone": { "type": "string", "example": "5511999999999" },
+                        "formattedPhone": { "type": "string", "example": "+55 (11) 99999-9999" },
+                        "isRegistered": { "type": "boolean", "example": true },
+                        "contactInfo": {
+                          "type": "object",
+                          "properties": {
+                            "name": { "type": "string", "nullable": true, "example": "Empresa XPTO" },
+                            "pushname": { "type": "string", "nullable": true, "example": "XPTO Atendimento" },
+                            "verifiedName": { "type": "string", "nullable": true },
+                            "isBusiness": { "type": "boolean", "example": true },
+                            "about": { "type": "string", "nullable": true, "example": "Atendimento de Segunda a Sexta das 8h às 18h" },
+                            "accountType": { "type": "string", "example": "WhatsApp Business" }
+                          }
+                        },
+                        "profilePicture": {
+                          "type": "object",
+                          "properties": {
+                            "hasPicture": { "type": "boolean" },
+                            "url": { "type": "string", "nullable": true }
+                          }
+                        },
+                        "screenshot": {
+                          "type": "object",
+                          "nullable": true,
+                          "properties": {
+                            "imageUrl": { "type": "string", "example": "/api/screenshots/perfil_5511999999999_1728860000.png" },
+                            "capturedAt": { "type": "string" }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "description": "Número inválido ou ausente" },
+          "503": { "description": "WhatsApp Web não conectado" }
+        }
+      }
+    },
+    "/api/contact/{phone}/picture": {
+      "get": {
+        "operationId": "getProfilePicture",
+        "summary": "Obter exclusivamente a foto de perfil do contato",
+        "description": "Recupera a URL em alta resolução da imagem de perfil do contato.",
+        "parameters": [
+          {
+            "name": "phone",
+            "in": "path",
+            "required": true,
+            "description": "Número de telefone do WhatsApp",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "redirect",
+            "in": "query",
+            "required": false,
+            "description": "Se verdadeiro, redireciona diretamente (HTTP 302) para a imagem",
+            "schema": { "type": "boolean", "default": false }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "URL da foto retornada",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "phone": { "type": "string" },
+                    "hasPicture": { "type": "boolean" },
+                    "url": { "type": "string", "nullable": true }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/user/status": {
+      "post": {
+        "operationId": "setUserStatusMessage",
+        "summary": "Definir novo recado/status no perfil do WhatsApp",
+        "description": "Atualiza a mensagem de recado (About) exibida no perfil do WhatsApp conectado.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["statusMessage"],
+                "properties": {
+                  "statusMessage": {
+                    "type": "string",
+                    "maxLength": 139,
+                    "description": "Nova mensagem de recado/status",
+                    "example": "Em atendimento inteligente via IA"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": { "type": "boolean" },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "message": { "type": "string" },
+                        "statusMessage": { "type": "string" },
+                        "updatedAt": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "setUserStatusMessageGet",
+        "summary": "Definir recado via GET",
+        "description": "Forma simplificada de atualizar o recado passando a mensagem na query string (?message=...).",
+        "parameters": [
+          {
+            "name": "message",
+            "in": "query",
+            "required": true,
+            "description": "Nova mensagem de recado",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": { "description": "Status atualizado com sucesso" }
+        }
+      }
+    }
+  }
+}
