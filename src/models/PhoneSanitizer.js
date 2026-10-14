@@ -54,12 +54,47 @@ class PhoneSanitizer {
         // Formatação amigável para exibição
         const formattedPhone = this.formatFriendly(phoneWithCountry);
 
+        // Gera variantes com e sem o 9º dígito para o Brasil
+        const variants = this.getVariants(phoneWithCountry);
+
         return {
             isValid: true,
             cleanPhone: phoneWithCountry,
             whatsappId,
-            formattedPhone
+            formattedPhone,
+            variants
         };
+    }
+
+    /**
+     * Retorna variantes do número (com e sem o 9º dígito no Brasil).
+     * Essencial para números de WhatsApp brasileiros que podem estar registrados
+     * no servidor com 8 dígitos (ex: 556584424000) ou 9 dígitos (ex: 5565984424000).
+     * @param {string} phoneWithCountry
+     * @returns {string[]}
+     */
+    static getVariants(phoneWithCountry) {
+        if (!phoneWithCountry || !phoneWithCountry.startsWith('55')) {
+            return [phoneWithCountry];
+        }
+
+        // Se tem 13 dígitos: 55 + DDD (2 dígitos) + 9 + 8 dígitos
+        if (phoneWithCountry.length === 13 && phoneWithCountry[4] === '9') {
+            const ddd = phoneWithCountry.substring(2, 4);
+            const rest = phoneWithCountry.substring(5);
+            const withoutNine = `55${ddd}${rest}`;
+            return [phoneWithCountry, withoutNine];
+        }
+
+        // Se tem 12 dígitos: 55 + DDD (2 dígitos) + 8 dígitos
+        if (phoneWithCountry.length === 12) {
+            const ddd = phoneWithCountry.substring(2, 4);
+            const rest = phoneWithCountry.substring(4);
+            const withNine = `55${ddd}9${rest}`;
+            return [phoneWithCountry, withNine];
+        }
+
+        return [phoneWithCountry];
     }
 
     /**

@@ -44,6 +44,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const contactRegistrationStatus = document.getElementById('contactRegistrationStatus');
     const contactPicLink = document.getElementById('contactPicLink');
 
+    // Campos de Conta Comercial
+    const contactCategoryRow = document.getElementById('contactCategoryRow');
+    const contactCategory = document.getElementById('contactCategory');
+    const contactHoursRow = document.getElementById('contactHoursRow');
+    const contactHours = document.getElementById('contactHours');
+    const contactWebsiteRow = document.getElementById('contactWebsiteRow');
+    const contactWebsite = document.getElementById('contactWebsite');
+    const contactAddressRow = document.getElementById('contactAddressRow');
+    const contactAddress = document.getElementById('contactAddress');
+
     const screenshotImage = document.getElementById('screenshotImage');
     const btnDownloadScreenshot = document.getElementById('btnDownloadScreenshot');
     const btnZoomScreenshot = document.getElementById('btnZoomScreenshot');
@@ -275,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const print = data.screenshot || {};
 
         // 1. Dados do contato
-        contactName.textContent = info.name || info.pushname || 'Sem nome registrado';
+        contactName.textContent = info.shortName || info.name || info.pushname || 'Sem nome registrado';
         contactFormattedPhone.textContent = data.formattedPhone || data.cleanPhone;
         contactWid.textContent = info.id || '-';
         contactPushname.textContent = info.pushname || '-';
@@ -291,10 +301,45 @@ document.addEventListener('DOMContentLoaded', () => {
             badgeAccountType.className = 'badge badge-secondary';
         }
 
+        // Informações adicionais de Conta Comercial
+        if (info.category) {
+            contactCategory.textContent = info.category;
+            contactCategoryRow.style.display = 'flex';
+        } else {
+            contactCategoryRow.style.display = 'none';
+        }
+
+        if (info.hours) {
+            contactHours.textContent = info.hours;
+            contactHoursRow.style.display = 'flex';
+        } else {
+            contactHoursRow.style.display = 'none';
+        }
+
+        if (info.website) {
+            contactWebsite.textContent = info.website;
+            contactWebsite.href = info.website.startsWith('http') ? info.website : `https://${info.website}`;
+            contactWebsiteRow.style.display = 'flex';
+        } else {
+            contactWebsiteRow.style.display = 'none';
+        }
+
+        if (info.address) {
+            contactAddress.textContent = info.address;
+            contactAddressRow.style.display = 'flex';
+        } else {
+            contactAddressRow.style.display = 'none';
+        }
+
         // Foto de Perfil
-        if (pic.url) {
+        const isValidPic = pic.url && !pic.url.startsWith('data:image/gif');
+        if (isValidPic) {
             contactAvatar.src = pic.url;
             contactPicLink.href = pic.url;
+            contactPicLink.style.display = 'inline-block';
+        } else if (print && print.imageUrl) {
+            contactAvatar.src = print.imageUrl;
+            contactPicLink.href = print.imageUrl;
             contactPicLink.style.display = 'inline-block';
         } else {
             contactAvatar.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(contactName.textContent)}&background=25D366&color=fff`;
