@@ -1,0 +1,11 @@
+node_modules/
+sessions/
+.wwebjs_auth/
+.wwebjs_cache/
+screenshots/*.png
+!screenshots/.gitkeep
+data/*.json
+!data/.gitkeep
+.env
+.DS_Store
+*.log

@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsProfile Pro - Extrator de Contatos & Screenshot WhatsApp Web</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2325D366'><path d='M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981z'/></svg>">
+</head>
+<body>
+    <div class="background-glow top-left"></div>
+    <div class="background-glow bottom-right"></div>
+
+    <header class="app-header">
+        <div class="header-container">
+            <div class="brand">
+                <div class="logo-wrapper">
+                    <svg class="whatsapp-logo" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.599 2.679-.702c.973.53 1.838.816 2.781.816 3.18 0 5.767-2.587 5.767-5.766.001-3.182-2.585-5.8-5.767-5.8zm0-2c4.288 0 7.767 3.479 7.767 7.8 0 4.32-3.479 7.766-7.767 7.766-1.312 0-2.571-.341-3.689-.963l-4.342 1.139 1.161-4.242c-.71-1.185-1.13-2.56-1.13-4.004 0-4.321 3.479-7.8 7.8-7.8zm0 18c2.237 0 4.338-.646 6.115-1.764l5.854 1.536-1.564-5.717c1.237-1.848 1.963-4.07 1.963-6.455 0-6.627-5.373-12-12-12s-12 5.373-12 12c0 2.385.726 4.607 1.963 6.455l-1.564 5.717 5.854-1.536c1.777 1.118 3.878 1.764 6.115 1.764z"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="brand-title">WhatsProfile <span class="gradient-text">Pro</span></h1>
+                    <p class="brand-tagline">Extração de Perfil, Foto, Recado & Screenshot do Painel Lateral</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <div class="connection-status-pill" id="statusPill">
+                    <span class="status-dot pulsing"></span>
+                    <span id="statusText">Verificando...</span>
+                </div>
+                <button class="btn btn-outline" id="btnRefreshStatus" title="Recarregar Status">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    Atualizar
+                </button>
+                <button class="btn btn-danger-ghost" id="btnLogout" style="display: none;" title="Desconectar WhatsApp">
+                    Sair
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Banner de Conexão com QR Code -->
+        <section class="qr-section card glass" id="qrContainer" style="display: none;">
+            <div class="qr-content-grid">
+                <div class="qr-display-box">
+                    <div class="qr-image-wrapper" id="qrImageWrapper">
+                        <div class="spinner-large"></div>
+                        <p class="text-muted">Aguardando geração do QR Code...</p>
+                    </div>
+                    <div class="qr-timer-bar"><div class="qr-timer-progress"></div></div>
+                </div>
+                <div class="qr-instructions">
+                    <div class="step-badge">Etapa 1 de 2</div>
+                    <h2>Conecte seu WhatsApp Web</h2>
+                    <p class="section-desc">Escaneie o código para vincular este servidor ao seu WhatsApp. A sessão ficará salva localmente e você não precisará escanear novamente.</p>
+                    <ol class="steps-list">
+                        <li><span>1</span> Abra o <strong>WhatsApp</strong> no seu smartphone.</li>
+                        <li><span>2</span> Toque em <strong>Configurações / Menu</strong> e selecione <strong>Aparelhos conectados</strong>.</li>
+                        <li><span>3</span> Toque em <strong>Conectar um aparelho</strong> e aponte a câmera para esta tela.</li>
+                    </ol>
+                    <div class="connection-tips">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                        <span>A sessão usa autenticação local segura (LocalAuth). Seus dados ficam protegidos no seu computador.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navegação por Abas -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="tab-search">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                Consulta de Perfil & Print
+            </button>
+            <button class="tab-btn" data-tab="tab-status">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                Definir Recado (Set Status)
+            </button>
+            <button class="tab-btn" data-tab="tab-history">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                Histórico de Consultas
+            </button>
+            <button class="tab-btn" data-tab="tab-api-docs">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                API REST para Outros Sistemas
+            </button>
+        </nav>
+
+        <!-- TAB 1: CONSULTA DE PERFIL & PRINT -->
+        <section class="tab-content active" id="tab-search">
+            <div class="search-panel card glass">
+                <div class="search-header">
+                    <h2>Consultar Número no WhatsApp</h2>
+                    <p class="text-muted">Obtenha dados cadastrais, validação de conta, foto em alta resolução e o print exato do painel lateral "Dados do contacto".</p>
+                </div>
+
+                <form id="formCheckProfile" class="search-form">
+                    <div class="input-row">
+                        <div class="input-group">
+                            <label for="inputPhone">Número de Telefone</label>
+                            <div class="input-with-icon">
+                                <span class="input-prefix">📞</span>
+                                <input type="text" id="inputPhone" placeholder="Ex: 5511999999999 ou (66) 99999-9999" required autocomplete="off">
+                            </div>
+                            <span class="input-hint">Aceita com ou sem DDI +55, espaços, parênteses ou traços.</span>
+                        </div>
+
+                        <div class="toggle-group">
+                            <label class="toggle-label">
+                                <input type="checkbox" id="toggleScreenshot" checked>
+                                <span class="toggle-slider"></span>
+                                <span class="toggle-text">Capturar Print do Painel Lateral</span>
+                            </label>
+                            <span class="input-hint">Abre a conversa e extrai o recorte nítido da barra lateral direita.</span>
+                        </div>
+
+                        <div class="button-wrapper">
+                            <button type="submit" class="btn btn-primary btn-large" id="btnSubmitSearch">
+                                <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                                <span class="btn-text">Analisar & Extrair</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quick-examples">
+                        <span class="text-muted">Exemplos rápidos:</span>
+                        <button type="button" class="btn-chip" data-phone="5511999999999">5511999999999</button>
+                        <button type="button" class="btn-chip" data-phone="5566999999999">5566999999999</button>
+                    </div>
+                </form>
+
+                <!-- Estado de Carregamento -->
+                <div class="loading-state" id="loadingState" style="display: none;">
+                    <div class="loader-orbit"></div>
+                    <h3 id="loadingTitle">Consultando WhatsApp Web...</h3>
+                    <p id="loadingSubtitle" class="text-muted">Navegando na conversa e isolando o painel de detalhes do contato.</p>
+                </div>
+
+                <!-- Mensagem de Erro -->
+                <div class="alert alert-error" id="errorAlert" style="display: none;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <div class="alert-content">
+                        <strong>Falha na Consulta:</strong>
+                        <span id="errorMessage">Erro ao processar.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Painel de Resultados -->
+            <div class="results-container" id="resultsContainer" style="display: none;">
+                <div class="results-grid">
+                    <!-- Card 1: Informações do Contato (Get contact info) -->
+                    <div class="card glass contact-card">
+                        <div class="card-header">
+                            <span class="badge badge-success">Get Contact Info ✅</span>
+                            <span class="badge" id="badgeAccountType">WhatsApp Business</span>
+                        </div>
+
+                        <div class="contact-profile-header">
+                            <div class="avatar-wrapper">
+                                <img id="contactAvatar" src="/img/default-avatar.png" alt="Foto do Contato" onerror="this.src='https://ui-avatars.com/api/?name=W&background=25D366&color=fff'">
+                            </div>
+                            <div class="contact-titles">
+                                <h3 id="contactName">Nome do Contato</h3>
+                                <p class="contact-phone" id="contactFormattedPhone">+55 (00) 00000-0000</p>
+                                <p class="contact-wid text-muted" id="contactWid">550000000000@c.us</p>
+                            </div>
+                        </div>
+
+                        <div class="contact-detail-items">
+                            <div class="detail-row">
+                                <span class="detail-label">Recado / Status (About):</span>
+                                <span class="detail-value quote-box" id="contactAbout">"Disponível"</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Nome Público (Pushname):</span>
+                                <span class="detail-value" id="contactPushname">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Nome Verificado:</span>
+                                <span class="detail-value" id="contactVerifiedName">-</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Status no WhatsApp:</span>
+                                <span class="detail-value" id="contactRegistrationStatus">Ativo e Cadastrado</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">URL Foto de Perfil:</span>
+                                <a id="contactPicLink" href="#" target="_blank" class="detail-link">Ver imagem em alta resolução ↗</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Print do Painel Lateral (Screenshot) -->
+                    <div class="card glass screenshot-card">
+                        <div class="card-header">
+                            <span class="badge badge-primary">Print Exato do Painel Lateral 📸</span>
+                            <div class="screenshot-actions">
+                                <a id="btnDownloadScreenshot" href="#" download class="btn btn-sm btn-outline">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    Baixar Print
+                                </a>
+                                <button id="btnZoomScreenshot" class="btn btn-sm btn-secondary">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                                    Expandir
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="screenshot-preview-wrapper" id="screenshotPreviewWrapper">
+                            <img id="screenshotImage" src="" alt="Screenshot do Painel Lateral">
+                        </div>
+                        <div class="screenshot-footer">
+                            <span class="text-muted" id="screenshotTimestamp">Capturado em: -</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: JSON Retornado (Estruturado) -->
+                <div class="card glass json-card">
+                    <div class="card-header">
+                        <div class="json-header-left">
+                            <span class="badge badge-secondary">JSON de Resposta da API</span>
+                            <span class="text-muted">Formato entregue para sistemas externos</span>
+                        </div>
+                        <button class="btn btn-sm btn-outline" id="btnCopyJson">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                            Copiar JSON
+                        </button>
+                    </div>
+                    <pre class="json-viewer" id="jsonViewer"><code>{}</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: DEFINIR RECADO / STATUS -->
+        <section class="tab-content" id="tab-status">
+            <div class="card glass form-card-centered">
+                <div class="card-header">
+                    <h2>Definir Recado do WhatsApp</h2>
+                    <span class="badge badge-success">Set user status message ✅</span>
+                </div>
+                <p class="text-muted">Atualize a mensagem de "Recado" (About) exibida no seu perfil do WhatsApp Web em tempo real.</p>
+
+                <form id="formSetStatus" class="status-form">
+                    <div class="input-group">
+                        <label for="inputStatusMessage">Novo Recado / Mensagem de Status</label>
+                        <textarea id="inputStatusMessage" rows="3" placeholder="Digite sua nova mensagem de recado (Ex: Em atendimento pelo suporte inteligente...)" required maxlength="139"></textarea>
+                        <div class="char-counter"><span id="charCount">0</span>/139 caracteres</div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" id="btnSubmitStatus">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                        Atualizar Recado no WhatsApp
+                    </button>
+                </form>
+
+                <div class="alert alert-success" id="statusSuccessAlert" style="display: none; margin-top: 1.5rem;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    <div class="alert-content">
+                        <strong>Recado Atualizado!</strong>
+                        <span id="statusSuccessMessage">Seu recado foi modificado no WhatsApp Web com sucesso.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: HISTÓRICO DE CONSULTAS -->
+        <section class="tab-content" id="tab-history">
+            <div class="card glass history-panel">
+                <div class="history-header">
+                    <div>
+                        <h2>Histórico de Consultas Realizadas</h2>
+                        <p class="text-muted">Consulte os números verificados anteriormente e recupere as capturas de tela salvas.</p>
+                    </div>
+                    <button class="btn btn-danger-ghost btn-sm" id="btnClearHistory">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        Limpar Histórico
+                    </button>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="data-table" id="historyTable">
+                        <thead>
+                            <tr>
+                                <th>Data/Hora</th>
+                                <th>Número</th>
+                                <th>Nome</th>
+                                <th>Tipo de Conta</th>
+                                <th>Foto</th>
+                                <th>Print</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">Carregando histórico...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: API REST PARA OUTROS SISTEMAS -->
+        <section class="tab-content" id="tab-api-docs">
+            <div class="card glass api-docs-panel">
+                <div class="api-docs-header">
+                    <h2>🔌 Guia de Integração REST para Sistemas Externos</h2>
+                    <p class="text-muted">Qualquer outro software, CRM, bot ou backend pode consultar dados do WhatsApp e alterar recados fazendo simples requisições HTTP GET e POST.</p>
+                </div>
+
+                <div class="api-endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="http-badge get">GET</span>
+                        <code>/api/contact/:phone</code>
+                    </div>
+                    <p>Retorna todas as informações do contato, foto de perfil e screenshot da barra lateral em JSON.</p>
+                    <div class="query-params">
+                        <strong>Parâmetros de Query opcionais:</strong>
+                        <ul>
+                            <li><code>screenshot=false</code> - Desativa a captura de tela para resposta ultra-rápida.</li>
+                        </ul>
+                    </div>
+                    <div class="code-snippet-box">
+                        <div class="snippet-header">Exemplo cURL:</div>
+                        <pre><code>curl -X GET "http://localhost:3000/api/contact/5511999999999"</code></pre>
+                    </div>
+                    <div class="code-snippet-box">
+                        <div class="snippet-header">Exemplo Node.js (fetch):</div>
+                        <pre><code>const response = await fetch('http://localhost:3000/api/contact/5511999999999');
+const data = await response.json();
+console.log(data.data.contactInfo.name, data.data.profilePicture.url, data.data.screenshot.imageUrl);</code></pre>
+                    </div>
+                </div>
+
+                <div class="api-endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="http-badge get">GET</span>
+                        <code>/api/contact/:phone/picture</code>
+                    </div>
+                    <p>Obtém a URL direta da foto de perfil em alta resolução.</p>
+                    <div class="code-snippet-box">
+                        <pre><code>curl -X GET "http://localhost:3000/api/contact/5511999999999/picture"</code></pre>
+                    </div>
+                </div>
+
+                <div class="api-endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="http-badge post">POST</span>
+                        <span class="http-badge get">GET</span>
+                        <code>/api/user/status</code>
+                    </div>
+                    <p>Atualiza o recado/status do WhatsApp conectado. Aceita tanto POST com body JSON quanto GET com query param <code>?message=...</code>.</p>
+                    <div class="code-snippet-box">
+                        <div class="snippet-header">Exemplo GET (via navegador ou URL):</div>
+                        <pre><code>curl -X GET "http://localhost:3000/api/user/status?message=Atendimento%20Online"</code></pre>
+                    </div>
+                    <div class="code-snippet-box">
+                        <div class="snippet-header">Exemplo POST JSON:</div>
+                        <pre><code>curl -X POST "http://localhost:3000/api/user/status" \
+  -H "Content-Type: application/json" \
+  -d '{"statusMessage": "Em reunião no momento"}'</code></pre>
+                    </div>
+                </div>
+
+                <div class="api-endpoint-card">
+                    <div class="endpoint-header">
+                        <span class="http-badge get">GET</span>
+                        <code>/api/status</code>
+                    </div>
+                    <p>Consulta se o WhatsApp Web está online, pronto ou aguardando QR Code.</p>
+                    <div class="code-snippet-box">
+                        <pre><code>curl -X GET "http://localhost:3000/api/status"</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Zoom para a Imagem do Print -->
+    <div class="modal" id="imageModal">
+        <div class="modal-backdrop" id="modalBackdrop"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <img id="modalImage" src="" alt="Print Ampliado">
+        </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
